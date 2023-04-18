@@ -89,3 +89,6 @@ coverage.xml
 # Mypy cache
 .mypy_cache/
 /data
+
+# pipenv
+Pipfile.lock
