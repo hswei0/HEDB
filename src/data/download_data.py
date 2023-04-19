@@ -30,20 +30,19 @@ for dturl in dturls:
     apdx.extend(apdx0)
 
 # 下載檔案
-try:
-    for url in apdx:
-        pattern = r'file/(.+)\.\s?[\u4e00-\u9fa5]'  # 中文字前面
-        # 有的還有空格
-        # 表單名稱
-        dtnm = re.search(pattern, url).group(1)
-        print(url)
-        response = requests.get('https://udb.moe.edu.tw/' + url)
-        fpth = root_rawdata.joinpath(dtnm + '.csv')
 
-        with open(fpth, 'wb') as f:
-            f.write(response.content)
-except:
-    print("An error occurred:", ExceptionType.__name__)
+for url in apdx:
+    pattern = r'file/(.+)\.\s?[\u4e00-\u9fa5]'  # 中文字前面
+    # 有的還有空格
+    # 表單名稱
+    dtnm = re.search(pattern, url).group(1)
+    print(url)
+    response = requests.get('https://udb.moe.edu.tw/' + url)
+    fpth = root_rawdata.joinpath(dtnm + '.csv')
+
+    with open(fpth, 'wb') as f:
+        f.write(response.content)
+
 
 if __name__ == '__main__':
     print('Please source this file')
