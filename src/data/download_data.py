@@ -32,13 +32,13 @@ for dturl in dturls:
 # 下載檔案
 
 for url in apdx:
-    pattern = r'file/(.+)\.\s?[\u4e00-\u9fa5]'  # 中文字前面
+    pattern = r'file/(.+)'  # 中文字前面
     # 有的還有空格
     # 表單名稱
     dtnm = re.search(pattern, url).group(1)
-    print(url)
+    print(dtnm)
     response = requests.get('https://udb.moe.edu.tw/' + url)
-    fpth = root_rawdata.joinpath(dtnm + '.csv')
+    fpth = root_rawdata.joinpath(dtnm)
 
     with open(fpth, 'wb') as f:
         f.write(response.content)
