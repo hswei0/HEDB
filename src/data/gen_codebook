@@ -1,0 +1,69 @@
+
+import pandas as pd
+import pandas as pd
+from pathlib import Path
+import re
+import os
+
+# 製作codebook
+colnm = ['欄位名稱(中)', '原始欄位名稱', '資料表名稱', '資料層級', '欄位名稱(英)', '中文值標籤',
+         '序號', '型態', '簡易說明', '資料變動說明', '本單位新增', '資料涵蓋學年度']
+
+# NOW: 先以學生類做示範
+projRoot = Path(__file__).parents[2]
+root_manraw = projRoot.joinpath('man/raw')
+# change cwd
+os.chdir(root_manraw)
+root_rawdata = projRoot.joinpath('data/raw')
+# filepaths = sorted(root_rawdata.rglob('學*.csv'))
+filepaths = sorted(root_rawdata.rglob('*.csv'))
+for flp in filepaths:
+    cdb = pd.DataFrame(columns=colnm)
+    dt = pd.read_csv(flp)
+    # 固定內容欄位
+    try:
+        cdb['原始欄位名稱'] = dt.columns
+        cdb['序號'] = cdb.index + 1  # 由1開始
+        cdb['型態'] = dt.dtypes.tolist()
+        pattern = re.compile(r'raw/(.+)\.csv')  # 中文字前面
+        filename = re.search(pattern, str(flp)).group(1)
+        cdb['資料表名稱'] = filename
+        cdb['資料涵蓋學年度'] = ' ;'.join(dt['學年度'].unique().astype(str).tolist())
+        cdb['本單位新增'] = False
+    except Exception as e:
+        print(f'{filename} 發生錯誤')
+        print(f"An exception occurred: {e}")
+    cdb.to_csv(filename + '.csv', index=False)
+
+
+# TODO: 修正
+"""error message
+研1.學校承接各單位資助「各類計畫經費」及其每師平均承接金額-以「校」統計 發生錯誤
+An exception occurred: '學年度'
+研2.學校承接各單位資助「產學合作」計畫經費及其每師平均承接金額-以「校」統計 發生錯誤
+An exception occurred: '學年度'
+研3.學校申請專利、新品種及授權件數-以「校」統計 發生錯誤
+An exception occurred: '學年度'
+研4.學校各種智慧財產權衍生運用總金額-以「校」統計 發生錯誤
+An exception occurred: '學年度'
+研6.學校衍生企業-以「校」統計 發生錯誤
+An exception occurred: '學年度'
+研7.學校合作企業新事業部門-以「校」統計 發生錯誤
+An exception occurred: '學年度'
+財1-1.國立學校可用資金、本年度現金增減情形-以「校」統計 發生錯誤
+An exception occurred: '學年度'
+財1-2.國立學校學雜費收入占總收入比率-以「校」統計 發生錯誤
+An exception occurred: '學年度'
+財1-3.國立學校負債占總資產比率-以「校」統計 發生錯誤
+An exception occurred: '學年度'
+財1-4.國立學校財務報表公告網址 發生錯誤
+An exception occurred: '學年度'
+財1-5.國立學校財務相關比率-以「校」統計 發生錯誤
+An exception occurred: '學年度'
+財1-6.查核國立各校財務狀況結果及追蹤辦理情形-以「校」統計 發生錯誤
+An exception occurred: '學年度'
+財2-4.私立學校財務報表公告網址 發生錯誤
+An exception occurred: '學年度'
+財2-9.查核私立各校財務狀況結果及追蹤辦理情形-以「校」統計 發生錯誤
+An exception occurred: '學年度'
+"""

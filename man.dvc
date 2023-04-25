@@ -1,0 +1,5 @@
+outs:
+- md5: 681482024a45ea6aa8fc885f2be2568a.dir
+  size: 86571
+  nfiles: 36
+  path: man
