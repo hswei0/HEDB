@@ -1,4 +1,3 @@
-
 import pandas as pd
 from pathlib import Path
 import re
@@ -10,6 +9,7 @@ colnm = ['欄位名稱(中)', '原始欄位名稱', '資料表名稱', '資料�
 
 projRoot = Path(__file__).parents[2]
 root_manraw = projRoot.joinpath('man/raw')
+root_manraw.mkdir(parents=True, exist_ok=True)
 # change cwd
 os.chdir(root_manraw)
 root_rawdata = projRoot.joinpath('data/raw')
@@ -26,6 +26,9 @@ for flp in filepaths:
         pattern = re.compile(r'raw/(.+)\.csv')  # 中文字前面
         filename = re.search(pattern, str(flp)).group(1)
         cdb['資料表名稱'] = filename
+        cdb['資料層級'] = cdb['資料表名稱'].str.extract('-以「(.+)」統計')
+        cdb['資料層級'] = cdb['資料層級'].str.replace('\(.+\)', '', regex=True)
+        cdb['本單位新增'] = False
         if '學年度' in dt.columns:
             cdb['資料涵蓋學年度'] = ' ;'.join(dt['學年度'].unique().astype(str).tolist())
         elif '查核年度' in dt.columns:
@@ -35,8 +38,6 @@ for flp in filepaths:
         else:
             print(f'資料表無「學年度」欄位，以「年度」替代：/n {filename}')
             cdb['資料涵蓋學年度'] = ' ;'.join(dt['年度'].unique().astype(str).tolist())
-
-        cdb['本單位新增'] = False
     except Exception as e:
         print(f'{filename} 發生錯誤')
         print(f"An exception occurred: {e}")
