@@ -93,3 +93,4 @@ coverage.xml
 # pipenv
 Pipfile.lock
 /man
+/data1

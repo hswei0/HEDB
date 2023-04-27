@@ -1,3 +1,2 @@
-['remote "origin"']
-url = https://dagshub.com/hsuwei/HEDB.dvc
-
+['remote "dev-dataclean"']
+    url = https://dagshub.com/hsuwei/HEDB.dvc
