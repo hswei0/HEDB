@@ -18,6 +18,9 @@ lxml = "*"
 xlrd = "*"
 dvc = "*"
 dagshub = "*"
+ydata-profiling = "*"
+ipywidgets = "*"
+pyperclip = "*"
 
 [requires]
 python_version = "3.11"
