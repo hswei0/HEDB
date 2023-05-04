@@ -105,6 +105,9 @@ def dataPipeline(dataset_names):
 
 if __name__ == "__main__":
 
+    # 產生原始資料檢誤內容
+    # RawDesc()
+
     dfs = [re.search(r'.+raw/(.+)', str(f)).group(1)
            for f in root_rawdata.rglob('*.csv')]
     dataPipeline(dfs)
