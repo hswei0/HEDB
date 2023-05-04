@@ -9,9 +9,10 @@ import re
 
 # 專案路徑
 # TODO: 之後調整
-projRoot = Path(__file__).parents[2]
+projRoot = Path.cwd()
 root_rawdata = projRoot.joinpath('data/raw')
 root_rawdata.mkdir(parents=True, exist_ok=True)
+
 
 # 資料種類
 dtcategory = ['學生類', '教職類', '研究類', '校務類', '財務類']
