@@ -5,109 +5,100 @@ import pandas as pd
 from ydata_profiling import ProfileReport
 
 
-projRoot = Path.cwd()
-root_stage1 = projRoot.joinpath('data/stage1')
-root_stage1.mkdir(exist_ok=True)
-root_rawdata = projRoot.joinpath('data/raw')
-
-
-def RawDesc(select_type=None):
-    """生成原始資料描述統計報告
-
-    Args:
-        select_type (list, optional): 欲輸出的類別—['校', '財', '教', '學', '研']. Defaults to ['all'].
-        HTML檔案輸出至`report/desc/raw`
+class Stage1Data():
+    """生成資料清理後的檔案 (Stage1)
     """
 
-    if select_type is None:
-        select_type = ['all']
+    def __init__(self, projectRoot):
+        self.projRoot = projectRoot
+        self.rootRawData = self.projRoot.joinpath('data/raw')
+        self.rootStage1 = self.projRoot.joinpath('data/stage1')
+        self.rootStage1.mkdir(parents=True, exist_ok=True)
 
-    root_rawDesc = projRoot.joinpath('reports/desc/raw')
-    root_rawDesc.mkdir(exist_ok=True, parents=True)
+        # all datasets
+        self.dataNames = [re.search(r'.+raw/(.+)', str(f)).group(1)
+                          for f in self.rootRawData.rglob('*.csv')
+                          ]
 
-    if select_type == ['all']:
-        pattern = '*.csv'
-    else:
-        characters = ''.join(select_type)
-        pattern = f'[{characters}]*.csv'
+    def raw_desc(self,
+                 select_type=None
+                 ):
+        """生成原始資料描述統計報告
+        Args:
+            select_type (list, optional): 欲輸出的類別—['校', '財', '教', '學', '研']. Defaults to ['all'].
+            HTML檔案輸出至`report/desc/raw`
+        """
 
-    filepaths = sorted(root_rawdata.rglob(pattern))
+        if select_type is None:
+            select_type = ['all']
 
-    for fpth in filepaths:
-        df = pd.read_csv(fpth,
-                         dtype={'學校統計處代碼': 'string', '系所代碼': 'string'}
-                         )
-        fnm = fpth.stem
-        profile = ProfileReport(df,
-                                title=f"{fnm} 原始資料描述統計報告",
-                                minimal=True)
-        # 輸出速度有影響
-        print(f'輸出{fnm}')
-        # TODO: 暫時無法解決中文字輸出問題，可能得等套件更新
-        profile.to_file(root_rawDesc.joinpath(f'{fnm}.html'))
+        root_rawDesc = self.projRoot.joinpath('reports/desc/raw')
+        print(root_rawDesc)
+        root_rawDesc.mkdir(exist_ok=True, parents=True)
 
+        if select_type == ['all']:
+            pattern = '*.csv'
+        else:
+            characters = ''.join(select_type)
+            pattern = f'[{characters}]*.csv'
 
-def import_data(dt_path):
-    """匯入原始資料
+        filepaths = sorted(self.rootRawData.rglob(pattern))
 
-    Args:
-        dt_path (str or path): 原始資料檔所屬資料夾路徑，常用設定為`data/raw`
+        for fpth in filepaths:
+            df = pd.read_csv(fpth,
+                             dtype={'學校統計處代碼': 'string', '系所代碼': 'string'}
+                             )
+            fnm = fpth.stem
+            profile = ProfileReport(df,
+                                    title=f"{fnm} 原始資料描述統計報告",
+                                    minimal=True)
+            print(f'輸出{fnm}')
+            # TODO: 暫時無法解決中文字輸出問題，可能得等套件更新
+            profile.to_file(root_rawDesc.joinpath(f'{fnm}.html'))
 
-    Returns:
-        DataFrame: 代碼設定為文字，`...`、`無`設定為遺漏值
-    """
-    df = pd.read_csv(dt_path,
-                     dtype={'學校統計處代碼': 'string', '系所代碼': 'string'},
-                     na_values=['...', '無']
-                     )
-    return df
+    @staticmethod
+    def RoctoCE(dataframe):
+        """年度相關欄位轉成西元年
 
+        Args:
+            dataframe (DataFrame): 欲處理之資料
 
-def RoctoCE(dataframe):
-    """年度相關欄位轉成西元年
+        Returns:
+            DataFrame: 年度欄位轉換為西元年
+        """
+        flt = dataframe.columns[dataframe.columns.str.contains('年度$')]
+        dataframe[flt] = dataframe[flt].apply(lambda yr: yr + 1911)
+        return dataframe
+    
+    def
 
-    Args:
-        dataframe (DataFrame): 欲處理之資料
+    def toStage1_pipeline(self):
 
-    Returns:
-        DataFrame: 年度欄位轉換為西元年
-    """
-    flt = dataframe.columns[dataframe.columns.str.contains('年度$')]
-    dataframe[flt] = dataframe[flt].apply(lambda yr: yr + 1911)
-    return dataframe
+        for fnm in self.dataNames:
+            # import raw dataset
+            pth = self.rootRawData.joinpath(fnm)
+            df = pd.read_csv(pth,
+                             dtype={'學校統計處代碼': 'string', '系所代碼': 'string'},
+                             na_values=['...', '無']
+                             )
+            # 西元年轉換
+            df = df.pipe(self.RoctoCE)
 
-
-def export_data(dataframe, stage1_path):
-    """處理後之stage1 data 輸出
-
-    Args:
-        dataframe (DataFrame): 欲輸出之資料
-        stage1_path (str or path): 輸出檔案欲儲存之路徑
-    """
-    dataframe.to_csv(stage1_path, index=False, encoding='utf8')
-    print(f'{stage1_path} 輸出成功～')
-
-
-def dataPipeline(dataset_names):
-    """Stage1 資料清理流程
-
-    Args:
-        dataset_names (list): 預處理資料之路徑。以 list 型態輸入所有要處理的資料檔案路徑
-    """
-    for fnm in dataset_names:
-        tbnm = fnm
-        pth = root_rawdata.joinpath(tbnm)
-        df = import_data(pth)
-        df = df.pipe(RoctoCE)
-        outpath = root_stage1.joinpath(tbnm)
-        export_data(df, outpath)
+            # 檔案輸出
+            df.to_csv(self.rootStage1.joinpath(fnm),
+                      index=False,
+                      encoding='utf8'
+                      )
+            print(f'{fnm} 輸出成功～')
 
 
 if __name__ == "__main__":
 
-    # 產生原始資料檢誤內容
-    # RawDesc()
+    projRoot = Path.cwd()
+    st1 = Stage1Data(projRoot)
 
-    dfs = [re.search(r'.+raw/(.+)', str(f)).group(1)
-           for f in root_rawdata.rglob('*.csv')]
-    dataPipeline(dfs)
+    # 輸出 raw data 檢誤報告
+    st1.raw_desc()
+
+    # 輸出 stage1 資料
+    st1.toStage1_pipeline()
