@@ -42,3 +42,13 @@ for flp in filepaths:
         print(f'{filename} 發生錯誤')
         print(f"An exception occurred: {e}")
     cdb.to_csv(filename + '.csv', index=False)
+
+
+# 合併所有表單
+filepaths = sorted(root_manraw.rglob('*.csv'))
+df = pd.concat((pd.read_csv(f) for f in filepaths), ignore_index=True)
+root_man = root_manraw.parents[0]
+df.to_csv(root_man.joinpath('codebook_all.csv'),
+          index=False
+          )
+

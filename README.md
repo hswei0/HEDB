@@ -1,99 +1,72 @@
-HEDB
-====
+# 大專校務資訊公開平臺
 
-大專校庫資料整理方案
+## 資料簡介
 
-Instructions
-------------
+本專案原始資料取自教育部建置之[大專校院校務資訊公開平臺]，資料類型涵蓋—學生類、教職類、研究類、校務類、財務類、教育統計等。[^資訊分類簡介] 取得原始資料後，進行初步資料處理釋出可供分析使用之資料，後續再依據研究需求建構相關分析指標。
 
-### Commit Message 規範
+[^資訊分類簡介]: 資訊分類詳情請見[網頁](https://udb.moe.edu.tw/udata/Introduction)。
 
-- 寫下「為什麼」你要作這樣的異動，而不是單單只記錄下你做了「什麼」異動。Commit Message 最好兼俱 Why 及 What，讓日後進行維護人員更快進入狀況。
-- 獨立 Commit 每個不同意義的異動，這樣 commit 訊息才會跟異動的程式碼有關聯。
+<!--links-->
+[大專校院校務資訊公開平臺]: https://udb.moe.edu.tw/udata/Index
 
-格式說明
+## 資料使用說明
 
-![Commit Message 規範範例解析](https://4.bp.blogspot.com/-HdNhJQb0D94/XMvqErOYGLI/AAAAAAAAAQ8/FQiuZsG7TT0WcQ8Q4zcccHCsuBOEDrouACLcBGAs/s1600/222.png)
+### 資料取得
 
-Header
+本專案之資料公開釋出於 [Dagshub] 檔案託管平台，資料處理過程之原始碼與釋出資料版本控制紀錄分別以 git 和 dvc 進行管理並開源分享，可自行下載取用。
+提供之資料可分為四種使用情境：
 
-* **type** 代表 commit 的類別：feat, fix, docs, style, refactor, test, chore，**必要欄位**。
-  * Type 是用來告訴進行 Code Review 的人應該以什麼態度來檢視 Commit 內容
-  * 依NERDA資料庫工作性質調整後的type list:
-    * feat: 新增/修改功能 (feature)。
-    * fix: 修補 bug (bug fix)。
-    * docs: 文件 (documentation)。
-    * style: 格式 (不影響程式碼運行的變動 white-space, formatting, missing semi colons, etc)。
-    * refactor: 重構 (既不是新增功能，也不是修補 bug 的程式碼變動)。
-    * revert: 撤銷回覆先前的 commit 例如：revert: type(scope): subject (回覆版本：xxxx)。
-* **scope** 代表 commit 影響的範圍，例如資料庫、控制層、模板層等等，視專案不同而不同，為可選欄位。
-* **subject** 代表此 commit 的簡短描述，不要超過 50 個字元，結尾不要加句號，為必要欄位。
+- 原始資料檔 (raw)：自公開平臺下載之原始資料，僅作為備份使用，無額外處理。
+- 資料分析用 (stage1)：對原始資料之欄位格式進行調整、遺漏值設定、encoding 統一使用`utf8`、年份相關欄位轉為西元制，並依據原始表單名稱個別儲存。
+- 研究專案分析用 (stage2)：依個別研究專案之目的建構之研究資料，可能涉及跨表單合併、欄位運算、模型建構等行為。可供相關領域研究者參考使用。
+- 常用評量指標 (index)： 本專案參考過去研究、評估報告常使用到的研究指標，依照定義加以建構之評量指標，可併入分析資料使用。
 
-#### Body
+以上各類型資料皆存於 Dagshub 之專案的 [data] 頁面中對應的資料夾內，可以分別下載，或是參考 dvc 的使用分法， `clone` 整個專案來使用。
 
-本次 Commit 的詳細描述，可以分成多行，每一行不要超過 72 個字元。
-說明程式碼變動的項目與原因，還有與先前行為的對比。
+### 欄位說明
 
-#### Footer
+以下為原始檔案之欄位內容，可透過 filter 等功能進一步檢視。
 
-填寫任務編號（如果有的話）
+<iframe class="airtable-embed" src="https://airtable.com/embed/shrRLLPnxhHDN40kA?backgroundColor=purple&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
-BREAKING CHANGE（可忽略），記錄不兼容的變動，以 BREAKING CHANGE: 開頭，後面是對變動的描述、以及變動原因和遷移方法
+<!--links-->
+[Dagshub]: https://dagshub.com/hsuwei/HEDB
+[data]: https://dagshub.com/hsuwei/HEDB/src/master/data
 
-### 訊息模板
-
-以 NERDA資料庫業務內容設計
-
-```
-feat: 新增20XX年資料
-
-    目標：
-    - 加入新年度資料
-    - 修改使用說明
-
-    調整項目：
-    1. tb1新增欄位1
-	2. airtable 上的說明更新
-
-issue #110
-
-
-```
-
-Project Organization
---------------------
+### 檔案架構
 
     ├── LICENSE
-    ├── README.md    <- The top-level README for developers using this project.
-    ├── data.dvc       <- Keeps the data versioned.
-    ├── man.dvc       <- Keeps the manual versioned.
+    ├── README.md    <- 專案說明文件
+    ├── data.dvc       <- data 版控工具
+    ├── man.dvc       <- manual 版控工具
     ├── data
-    │   ├── stage1       <- The datasets for analyse.
-    │   └── raw            <- The original data.
+    │   ├── raw        <- The original data. 
+    │   ├── stage1     <- The datasets for analyse.
+    │   ├── stage2     <- The data for research.
+    │   └── index      <- 校務分析指標
     │
     ├── man
     │   ├── raw           <- 原始資料使用說明(codebook)
-    │   └── release     <- 人工調整後之資料使用說明(codebook)
+    │   └── release       <- 人工調整後之資料使用說明(codebook)
     │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short`-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
+    ├── notebooks      <- Jupyter notebooks 主要為資料探勘和初步分析
     │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+    ├── references     <- 相關規定和參考文件
     │
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures                 <- Generated graphics and figures to be used in reporting
-    │   └── metrics.txt             <- Relevant metrics after evaluating the model.
-    │   └── training_metrics.txt    <- Relevant metrics from training the model.
+    │   ├── desc           <- 描述性資料分析
+    │   └── figures        <- Generated graphics and figures to be used in reporting
     │
-    ├── Pipfile   <- The requirements file for reproducing the analysis environment
+    ├── pyproject.toml     <- The requirements file for reproducing the analysis environment (`poetry`)
     │
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
+    ├── src                    <- Source code for use in this project.
+    │   ├── __init__.py          <- Makes src a Python module
     │   │
-    │   ├── data           <- Scripts to download or generate data
+    │   ├── data                 <- Scripts to download or generate data
     │   │   ├── __init__.py
-    │   │   └── make_dataset.py
+    │   │   ├── download_data.py   <- 下載原始資料
+    │   │   ├── gen_codebook.py    <- 產生 codebook
+    │   │   └── make_stage1.py     <- stage1 資料處理與輸出
     │   │
     │   ├── models         <- 建立分析指標
     │   │   ├──__init__.py
@@ -104,6 +77,4 @@ Project Organization
     │       ├── __init__.py
     │       └── visualize.py
 
----
 
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
