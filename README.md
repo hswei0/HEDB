@@ -8,7 +8,7 @@
 
 ### 資料取得
 
-本專案之資料公開釋出於 [Dagshub](https://dagshub.com/) 檔案託管平台，資料處理過程之原始碼與釋出資料版本控制紀錄分別以 git 和 dvc 進行管理並開源分享，可自行下載取用。
+本專案之資料公開釋出於 Dagshub 檔案託管平台，資料處理過程之原始碼與釋出資料版本控制紀錄分別以 git 和 dvc 進行管理並開源分享，可自行下載取用。
 提供之資料可分為四種使用情境：
 
 - 原始資料檔 (raw)：自公開平臺下載之原始資料，僅作為備份使用，無額外處理。
@@ -16,7 +16,7 @@
 - 研究專案分析用 (stage2)：依個別研究專案之目的建構之研究資料，可能涉及跨表單合併、欄位運算、模型建構等行為。可供相關領域研究者參考使用。
 - 常用評量指標 (index)： 本專案參考過去研究、評估報告常使用到的研究指標，依照定義加以建構之評量指標，可併入分析資料使用。
 
-以上各類型資料皆存於專案的 [data](https://dagshub.com/hsuwei/HEDB/src/beta-release/data) 資料夾內，可以分別下載，或是參考下方「快速使用」的介紹， `clone` 整個專案來使用。
+以上各類型資料皆存於專案的 data 資料夾內，可以分別下載，或是參考下方「快速使用」的介紹， `clone` 整個專案來使用。
 
 #### 快速使用
 
@@ -88,7 +88,7 @@ dvc pull -q -r origin
 
 #### 欄位檢視與資料探索
 
-若欲細看本專案整理過後 (stage1) 各資料表的欄位內容與描述統計結果，可於 dagshub 網頁點選 `notebooks/explore-data.ipynb`檔案，開啟後點擊右上角 `Open in Colab`，便可開啟 google colab ，執行完環境設定語法後，即可線上進行資料檢視與相關分析，相關檔案則會存於個人google drive。
+若欲細看本專案整理過後 (stage1) 各資料表的欄位內容與描述統計結果，可於 dagshub 網頁點選 [notebooks/explore-data.ipynb](https://dagshub.com/hsuwei/HEDB/src/beta-release/notebooks) 檔案，開啟後點擊右上角 `Open in Colab`，便可開啟 google colab ，執行完環境設定語法後，即可線上進行資料檢視與相關分析，相關檔案則會存於個人google drive。
 
 ### 檔案架構
 
