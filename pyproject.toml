@@ -6,7 +6,7 @@ authors = ["hswei0 <github.wei@mailhero.io>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.12"
+python = ">=3.9,<3.12"
 requests = "^2.28.0"
 notebook = "^6.5.4"
 pandas = "^1.1"
