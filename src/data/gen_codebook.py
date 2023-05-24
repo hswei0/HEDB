@@ -3,6 +3,11 @@ from pathlib import Path
 import re
 import os
 
+'''
+Generate codebook from raw data
+'''
+
+
 # 製作codebook
 colnm = ['欄位名稱(中)', '原始欄位名稱', '資料表名稱', '資料層級', '欄位名稱(英)', '中文值標籤',
          '序號', '型態', '簡易說明', '資料變動說明', '本單位新增', '資料涵蓋學年度']
@@ -51,4 +56,3 @@ root_man = root_manraw.parents[0]
 df.to_csv(root_man.joinpath('codebook_all.csv'),
           index=False
           )
-
